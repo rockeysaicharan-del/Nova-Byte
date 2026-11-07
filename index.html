@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ᴄ̫ᴏ̫ᴅ̫ᴇ̫s̫ᴘ̫ʜ̫ᴇ̫ʀ̫ᴇ̫ - Multi-Language IDE</title>
+    <title>𒆜🄲🄾🄳🄴🅂🄿🄷🄴🅁🄴𒆜 - Multi-Language IDE</title>
     
     <!-- CodeMirror Editor Styling -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
-    <!-- Google Fonts for Modern Styling -->
+    <!-- CodeMirror Lint CSS (Real-time Error Highlighting) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/lint/lint.min.css">
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
     <style>
@@ -28,7 +30,6 @@
             overflow: hidden;
         }
 
-        /* Modern Glassmorphic Header */
         .header {
             display: flex;
             align-items: center;
@@ -61,7 +62,6 @@
             font-family: 'Fira Code', monospace;
         }
 
-        /* Custom Brand Title */
         .brand-title {
             font-size: 1.4rem;
             font-weight: 700;
@@ -128,7 +128,6 @@
             transform: scale(0.97);
         }
 
-        /* Workspace Grid */
         .workspace {
             display: flex;
             flex: 1;
@@ -174,7 +173,12 @@
             background-color: #0d1322 !important;
         }
 
-        /* Output & Web Preview Area */
+        /* Error Marker Highlight */
+        .CodeMirror-lint-mark-error {
+            border-bottom: 2px dashed #ef4444;
+            background-color: rgba(239, 68, 68, 0.15);
+        }
+
         #output-container {
             flex: 1;
             display: flex;
@@ -254,7 +258,6 @@
 
     <!-- Workspace View -->
     <div class="workspace">
-        <!-- Code Input Editor Pane -->
         <div class="pane">
             <div class="pane-header">
                 <span>Source Code</span>
@@ -266,7 +269,6 @@ let b = 20;
 console.log("Sum:", a + b);</textarea>
         </div>
         
-        <!-- Code Execution Output Pane -->
         <div class="pane">
             <div class="pane-header">
                 <span id="output-title">Console Output</span>
@@ -287,8 +289,12 @@ console.log("Sum:", a + b);</textarea>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/go/go.min.js"></script>
 
+    <!-- JSHint & CodeMirror Lint Addons for Real-Time Error Checking -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jshint/2.13.6/jshint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/lint/lint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/lint/javascript-lint.min.js"></script>
+
     <script>
-        // Starter Code Templates for Languages
         const codeTemplates = {
             javascript: `console.log("Welcome to CodeSphere!");\nlet x = 5;\nlet y = 15;\nconsole.log("Result:", x * y);`,
             html: `<!DOCTYPE html>\n<html>\n<head>\n  <style>\n    body { font-family: Arial; text-align: center; padding-top: 40px; background: #0f172a; color: white; }\n    h1 { color: #38bdf8; }\n    button { padding: 10px 20px; background: #10b981; border: none; color: white; border-radius: 5px; cursor: pointer; }\n  </style>\n</head>\n<body>\n  <h1>Hello CodeSphere Live Preview!</h1>\n  <p>Edit this HTML/CSS code and hit Run Code.</p>\n  <button onclick="alert('Native App Engine Working!')">Click Me</button>\n</body>\n</html>`,
@@ -300,12 +306,14 @@ console.log("Sum:", a + b);</textarea>
             go: `package main\nimport "fmt"\n\nfunc main() {\n    fmt.Println("Hello from Go!")\n}`
         };
 
-        // Initialize CodeMirror Component
+        // Initialize CodeMirror Component with Linting (Error Highlighting)
         var editor = CodeMirror.fromTextArea(document.getElementById("editor-textarea"), {
             lineNumbers: true,
             theme: "dracula",
             mode: "javascript",
-            indentUnit: 4
+            indentUnit: 4,
+            gutters: ["CodeMirror-lint-markers"],
+            lint: true
         });
 
         const langSelect = document.getElementById("language-select");
@@ -319,19 +327,22 @@ console.log("Sum:", a + b);</textarea>
             let lang = this.value;
             langIndicator.textContent = langSelect.options[langSelect.selectedIndex].text;
             
-            // Set Syntax Highlighting
-            if (lang === "javascript") editor.setOption("mode", "javascript");
-            else if (lang === "html") editor.setOption("mode", "htmlmixed");
-            else if (lang === "python") editor.setOption("mode", "python");
-            else if (lang === "cpp" || lang === "c") editor.setOption("mode", "text/x-c++src");
-            else if (lang === "java") editor.setOption("mode", "text/x-java");
-            else if (lang === "csharp") editor.setOption("mode", "text/x-csharp");
-            else if (lang === "go") editor.setOption("mode", "go");
+            // Set Syntax Highlighting & Linting Mode
+            if (lang === "javascript") {
+                editor.setOption("mode", "javascript");
+                editor.setOption("lint", true);
+            } else {
+                editor.setOption("lint", false);
+                if (lang === "html") editor.setOption("mode", "htmlmixed");
+                else if (lang === "python") editor.setOption("mode", "python");
+                else if (lang === "cpp" || lang === "c") editor.setOption("mode", "text/x-c++src");
+                else if (lang === "java") editor.setOption("mode", "text/x-java");
+                else if (lang === "csharp") editor.setOption("mode", "text/x-csharp");
+                else if (lang === "go") editor.setOption("mode", "go");
+            }
 
-            // Load Template Code
             editor.setValue(codeTemplates[lang] || "");
 
-            // Toggle Output Panel Displays
             if (lang === "html") {
                 outputTitle.textContent = "Live Web Preview";
             } else {
@@ -341,12 +352,11 @@ console.log("Sum:", a + b);</textarea>
             }
         });
 
-        // Run Code Handler (Fully Self-Contained Execution Engine)
+        // Run Code Handler
         document.getElementById("run-btn").addEventListener("click", async function() {
             let code = editor.getValue();
             let language = langSelect.value;
             
-            // 1. Native HTML Live Preview Mode (Embedded Isolated Frame)
             if (language === "html") {
                 outputScreen.style.display = "none";
                 htmlPreview.style.display = "block";
@@ -357,12 +367,10 @@ console.log("Sum:", a + b);</textarea>
                 return;
             }
 
-            // Standard Console Panel Setup
             htmlPreview.style.display = "none";
             outputScreen.style.display = "block";
             outputScreen.textContent = "Running engine...";
 
-            // 2. Native Client-Side JavaScript Execution (No API required)
             if (language === "javascript") {
                 outputScreen.textContent = "";
                 let logs = [];
@@ -390,7 +398,6 @@ console.log("Sum:", a + b);</textarea>
                 return;
             }
 
-            // 3. Multi-Language Compiler Engine Execution
             try {
                 let engineLang = language;
                 if (language === "cpp") engineLang = "c++";
