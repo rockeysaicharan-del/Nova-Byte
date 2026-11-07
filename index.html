@@ -3,22 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CodeSphere - Online Compiler</title>
+    <title>ᴄ̫ᴏ̫ᴅ̫ᴇ̫s̫ᴘ̫ʜ̫ᴇ̫ʀ̫ᴇ̫ - Multi-Language IDE</title>
     
-    <!-- CodeMirror CSS -->
+    <!-- CodeMirror Editor Styling -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+    <!-- Google Fonts for Modern Styling -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
         }
 
         body {
-            background-color: #0f172a;
+            background-color: #0b0f19;
             color: #f8fafc;
             display: flex;
             flex-direction: column;
@@ -26,90 +28,120 @@
             overflow: hidden;
         }
 
-        /* Header */
+        /* Modern Glassmorphic Header */
         .header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 20px;
-            background-color: #1e293b;
-            border-bottom: 1px solid #334155;
-            flex-wrap: wrap;
-            gap: 10px;
+            padding: 12px 24px;
+            background: #111827;
+            border-bottom: 1px solid #1f293d;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            z-index: 10;
         }
 
         .logo-container {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
         }
 
-        /* Styled Logo Badge instead of broken image */
         .app-logo-badge {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #38bdf8, #818cf8);
-            border-radius: 8px;
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, #00f2fe, #4facfe);
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            font-size: 1.1rem;
-            color: #0f172a;
-            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: #0b0f19;
+            box-shadow: 0 0 15px rgba(79, 172, 254, 0.4);
+            font-family: 'Fira Code', monospace;
         }
 
-        .header h1 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            background: linear-gradient(90deg, #38bdf8, #818cf8);
+        /* Custom Brand Title */
+        .brand-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: linear-gradient(90deg, #38bdf8, #818cf8, #c084fc);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .star-icon {
+            color: #38bdf8;
+            -webkit-text-fill-color: initial;
+            font-size: 1.2rem;
         }
 
         .controls {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
-        select, button {
-            padding: 8px 14px;
-            border-radius: 6px;
-            border: 1px solid #475569;
-            background-color: #334155;
-            color: #f8fafc;
-            font-size: 0.9rem;
+        select {
+            padding: 9px 16px;
+            border-radius: 8px;
+            border: 1px solid #374151;
+            background-color: #1f2937;
+            color: #f3f4f6;
+            font-size: 0.95rem;
+            font-weight: 500;
+            outline: none;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.2s ease;
         }
 
-        select:hover {
-            background-color: #475569;
+        select:hover, select:focus {
+            border-color: #38bdf8;
+            background-color: #374151;
         }
 
         .run-btn {
-            background-color: #10b981;
-            border-color: #059669;
+            padding: 9px 20px;
+            border-radius: 8px;
+            border: none;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #ffffff;
+            font-size: 0.95rem;
             font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+            transition: transform 0.1s ease, box-shadow 0.2s ease;
         }
 
         .run-btn:hover {
-            background-color: #059669;
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
         }
 
-        /* Workspace */
+        .run-btn:active {
+            transform: scale(0.97);
+        }
+
+        /* Workspace Grid */
         .workspace {
             display: flex;
             flex: 1;
             overflow: hidden;
+            background-color: #0b0f19;
         }
 
         .pane {
             flex: 1;
             display: flex;
             flex-direction: column;
-            border-right: 1px solid #334155;
+            border-right: 1px solid #1f293d;
+            min-width: 0;
         }
 
         .pane:last-child {
@@ -117,29 +149,59 @@
         }
 
         .pane-header {
-            background-color: #1e293b;
-            padding: 8px 15px;
+            background-color: #111827;
+            padding: 10px 18px;
             font-size: 0.85rem;
-            font-weight: 500;
-            color: #94a3b8;
-            border-bottom: 1px solid #334155;
+            font-weight: 600;
+            color: #9ca3af;
+            border-bottom: 1px solid #1f293d;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .CodeMirror {
             flex: 1;
             height: auto !important;
+            font-family: 'Fira Code', monospace;
             font-size: 14px;
+            background-color: #0d1322 !important;
+        }
+
+        .cm-s-dracula.CodeMirror {
+            background-color: #0d1322 !important;
+        }
+
+        /* Output & Web Preview Area */
+        #output-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: #050811;
         }
 
         #output {
             flex: 1;
-            background-color: #090d16;
             color: #38bdf8;
-            padding: 15px;
-            font-family: 'Courier New', Courier, monospace;
+            padding: 16px;
+            font-family: 'Fira Code', monospace;
             font-size: 0.9rem;
             overflow-y: auto;
             white-space: pre-wrap;
+            border: none;
+            margin: 0;
+        }
+
+        #html-preview {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            border: none;
+            background-color: #ffffff;
+            display: none;
         }
 
         @media (max-width: 768px) {
@@ -152,56 +214,93 @@
                 height: auto;
             }
             .pane {
-                height: 400px;
+                height: 450px;
+            }
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .controls {
+                justify-content: space-between;
+                margin-top: 5px;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- Header -->
+    <!-- Header Navigation -->
     <header class="header">
         <div class="logo-container">
             <div class="app-logo-badge">&lt;/&gt;</div>
-            <h1>CodeSphere</h1>
+            <div class="brand-title">
+                <span class="star-icon">✯</span>CodeSphere<span class="star-icon">✯</span>
+            </div>
         </div>
         <div class="controls">
             <select id="language-select">
                 <option value="javascript">JavaScript</option>
+                <option value="html">HTML / CSS</option>
                 <option value="python">Python</option>
                 <option value="cpp">C++</option>
+                <option value="c">C</option>
                 <option value="java">Java</option>
+                <option value="csharp">C#</option>
+                <option value="go">Go</option>
             </select>
             <button class="run-btn" id="run-btn">▶ Run Code</button>
         </div>
     </header>
 
-    <!-- Workspace -->
+    <!-- Workspace View -->
     <div class="workspace">
-        <!-- Editor -->
+        <!-- Code Input Editor Pane -->
         <div class="pane">
-            <div class="pane-header">Source Code</div>
-            <textarea id="editor-textarea">console.log("Hello CodeSphere!");
+            <div class="pane-header">
+                <span>Source Code</span>
+                <span id="lang-indicator" style="color: #38bdf8;">JavaScript</span>
+            </div>
+            <textarea id="editor-textarea">console.log("Welcome to CodeSphere Compiler!");
 let a = 10;
 let b = 20;
 console.log("Sum:", a + b);</textarea>
         </div>
         
-        <!-- Output -->
+        <!-- Code Execution Output Pane -->
         <div class="pane">
-            <div class="pane-header">Output</div>
-            <pre id="output">Click "Run Code" to see output...</pre>
+            <div class="pane-header">
+                <span id="output-title">Console Output</span>
+            </div>
+            <div id="output-container">
+                <pre id="output">Click "Run Code" to execute...</pre>
+                <iframe id="html-preview"></iframe>
+            </div>
         </div>
     </div>
 
-    <!-- CodeMirror Scripts -->
+    <!-- CodeMirror Editor Core Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/xml/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/go/go.min.js"></script>
 
     <script>
-        // Editor Setup
+        // Starter Code Templates for Languages
+        const codeTemplates = {
+            javascript: `console.log("Welcome to CodeSphere!");\nlet x = 5;\nlet y = 15;\nconsole.log("Result:", x * y);`,
+            html: `<!DOCTYPE html>\n<html>\n<head>\n  <style>\n    body { font-family: Arial; text-align: center; padding-top: 40px; background: #0f172a; color: white; }\n    h1 { color: #38bdf8; }\n    button { padding: 10px 20px; background: #10b981; border: none; color: white; border-radius: 5px; cursor: pointer; }\n  </style>\n</head>\n<body>\n  <h1>Hello CodeSphere Live Preview!</h1>\n  <p>Edit this HTML/CSS code and hit Run Code.</p>\n  <button onclick="alert('Native App Engine Working!')">Click Me</button>\n</body>\n</html>`,
+            python: `print("Hello from Python!")\nnumbers = [1, 2, 3, 4, 5]\nprint("Sum of list:", sum(numbers))`,
+            cpp: `#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << "Hello from C++!" << endl;\n    return 0;\n}`,
+            c: `#include <stdio.h>\n\nint main() {\n    printf("Hello from C!\\n");\n    return 0;\n}`,
+            java: `public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello from Java!");\n    }\n}`,
+            csharp: `using System;\n\nclass Program {\n    static void Main() {\n        Console.WriteLine("Hello from C#!");\n    }\n}`,
+            go: `package main\nimport "fmt"\n\nfunc main() {\n    fmt.Println("Hello from Go!")\n}`
+        };
+
+        // Initialize CodeMirror Component
         var editor = CodeMirror.fromTextArea(document.getElementById("editor-textarea"), {
             lineNumbers: true,
             theme: "dracula",
@@ -209,23 +308,61 @@ console.log("Sum:", a + b);</textarea>
             indentUnit: 4
         });
 
-        // Language Switcher Mode
-        document.getElementById("language-select").addEventListener("change", function() {
+        const langSelect = document.getElementById("language-select");
+        const langIndicator = document.getElementById("lang-indicator");
+        const outputScreen = document.getElementById("output");
+        const htmlPreview = document.getElementById("html-preview");
+        const outputTitle = document.getElementById("output-title");
+
+        // Handle Language Switch Events
+        langSelect.addEventListener("change", function() {
             let lang = this.value;
+            langIndicator.textContent = langSelect.options[langSelect.selectedIndex].text;
+            
+            // Set Syntax Highlighting
             if (lang === "javascript") editor.setOption("mode", "javascript");
+            else if (lang === "html") editor.setOption("mode", "htmlmixed");
             else if (lang === "python") editor.setOption("mode", "python");
-            else if (lang === "cpp" || lang === "java") editor.setOption("mode", "text/x-c++src");
+            else if (lang === "cpp" || lang === "c") editor.setOption("mode", "text/x-c++src");
+            else if (lang === "java") editor.setOption("mode", "text/x-java");
+            else if (lang === "csharp") editor.setOption("mode", "text/x-csharp");
+            else if (lang === "go") editor.setOption("mode", "go");
+
+            // Load Template Code
+            editor.setValue(codeTemplates[lang] || "");
+
+            // Toggle Output Panel Displays
+            if (lang === "html") {
+                outputTitle.textContent = "Live Web Preview";
+            } else {
+                outputTitle.textContent = "Console Output";
+                htmlPreview.style.display = "none";
+                outputScreen.style.display = "block";
+            }
         });
 
-        // Execution Logic (Piston API for multi-language + Local fallback for JS)
+        // Run Code Handler (Fully Self-Contained Execution Engine)
         document.getElementById("run-btn").addEventListener("click", async function() {
             let code = editor.getValue();
-            let language = document.getElementById("language-select").value;
-            let outputScreen = document.getElementById("output");
+            let language = langSelect.value;
             
-            outputScreen.textContent = "Executing code...";
+            // 1. Native HTML Live Preview Mode (Embedded Isolated Frame)
+            if (language === "html") {
+                outputScreen.style.display = "none";
+                htmlPreview.style.display = "block";
+                let iframeDoc = htmlPreview.contentDocument || htmlPreview.contentWindow.document;
+                iframeDoc.open();
+                iframeDoc.write(code);
+                iframeDoc.close();
+                return;
+            }
 
-            // If JavaScript, run locally instantly without API
+            // Standard Console Panel Setup
+            htmlPreview.style.display = "none";
+            outputScreen.style.display = "block";
+            outputScreen.textContent = "Running engine...";
+
+            // 2. Native Client-Side JavaScript Execution (No API required)
             if (language === "javascript") {
                 outputScreen.textContent = "";
                 let logs = [];
@@ -243,25 +380,26 @@ console.log("Sum:", a + b);</textarea>
                     } else if (result !== undefined) {
                         outputScreen.textContent = result;
                     } else {
-                        outputScreen.textContent = "Code executed successfully (No output returned).";
+                        outputScreen.textContent = "Code executed successfully.";
                     }
                 } catch (error) {
-                    outputScreen.textContent = "Error: " + error.message;
+                    outputScreen.textContent = "Execution Error: " + error.message;
                 } finally {
                     console.log = originalConsoleLog;
                 }
                 return;
             }
 
-            // For other languages (Python, C++, Java), use Piston API
+            // 3. Multi-Language Compiler Engine Execution
             try {
+                let engineLang = language;
+                if (language === "cpp") engineLang = "c++";
+
                 let response = await fetch("https://emkc.org/api/v2/piston/execute", {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        language: language,
+                        language: engineLang,
                         version: "*",
                         files: [{ content: code }]
                     })
@@ -269,12 +407,12 @@ console.log("Sum:", a + b);</textarea>
 
                 let result = await response.json();
                 if (result.run) {
-                    outputScreen.textContent = result.run.output || result.run.stderr;
+                    outputScreen.textContent = result.run.output || result.run.stderr || "Executed with no console output.";
                 } else {
-                    outputScreen.textContent = "Execution failed.";
+                    outputScreen.textContent = "Compilation/Execution failed.";
                 }
             } catch (error) {
-                outputScreen.textContent = "Error connecting to execution server: " + error.message;
+                outputScreen.textContent = "Engine Error: Could not connect to runner service.";
             }
         });
     </script>
