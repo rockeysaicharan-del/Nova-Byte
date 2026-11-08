@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⁂Nova-Byte⁂ - Multi-Language IDE</title>
+    <title>NovaByte - Multi-Language IDE</title>
     
     <!-- CodeMirror Editor Styling -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
@@ -47,19 +47,12 @@
             gap: 14px;
         }
 
-        .app-logo-badge {
+        .app-logo-img {
             width: 42px;
             height: 42px;
-            background: linear-gradient(135deg, #00f2fe, #4facfe);
             border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 1.2rem;
-            color: #0b0f19;
+            object-fit: cover;
             box-shadow: 0 0 15px rgba(79, 172, 254, 0.4);
-            font-family: 'Fira Code', monospace;
         }
 
         .brand-title {
@@ -173,7 +166,6 @@
             background-color: #0d1322 !important;
         }
 
-        /* Error Marker Highlight */
         .CodeMirror-lint-mark-error {
             border-bottom: 2px dashed #ef4444;
             background-color: rgba(239, 68, 68, 0.15);
@@ -236,7 +228,7 @@
     <!-- Header Navigation -->
     <header class="header">
         <div class="logo-container">
-            <div class="app-logo-badge">&lt;/&gt;</div>
+            <img src="3501F3F1-C512-4797-9108-BEB179737198" alt="NovaByte Logo" class="app-logo-img">
             <div class="brand-title">
                 <span class="star-icon">✯</span>NovaByte<span class="star-icon">✯</span>
             </div>
@@ -306,7 +298,6 @@ console.log("Sum:", a + b);</textarea>
             go: `package main\nimport "fmt"\n\nfunc main() {\n    fmt.Println("Hello from Go on NovaByte!")\n}`
         };
 
-        // Initialize CodeMirror Component with Linting
         var editor = CodeMirror.fromTextArea(document.getElementById("editor-textarea"), {
             lineNumbers: true,
             theme: "dracula",
@@ -322,12 +313,10 @@ console.log("Sum:", a + b);</textarea>
         const htmlPreview = document.getElementById("html-preview");
         const outputTitle = document.getElementById("output-title");
 
-        // Handle Language Switch Events
         langSelect.addEventListener("change", function() {
             let lang = this.value;
             langIndicator.textContent = langSelect.options[langSelect.selectedIndex].text;
             
-            // Set Syntax Highlighting & Linting Mode
             if (lang === "javascript") {
                 editor.setOption("mode", "javascript");
                 editor.setOption("lint", true);
@@ -352,7 +341,6 @@ console.log("Sum:", a + b);</textarea>
             }
         });
 
-        // Run Code Handler
         document.getElementById("run-btn").addEventListener("click", async function() {
             let code = editor.getValue();
             let language = langSelect.value;
